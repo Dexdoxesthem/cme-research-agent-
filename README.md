@@ -1,55 +1,47 @@
-<div align="center">
+# CME Futures Research Agent
 
-# 🧠 CME Futures Research Agent
-
-**A quantitative research & risk-framing desk for the CME micro-futures trading challenge.**
+**Quantitative research & risk-framing desk for the CME micro-futures trading challenge.**
 
 Research tool · Risk-framing engine · **Not** a signal generator
 
-![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?style=flat-square&logo=fastapi&logoColor=white)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)
-![Status](https://img.shields.io/badge/status-active-2ea44f?style=flat-square)
-
-</div>
+Python · FastAPI · React · Vite · yfinance
 
 ---
 
-## 🎯 What it does
+## What it does
 
-Analyzes a **49-instrument universe** across **7 sectors** — equity, rates, metals,
-energy, agriculture, FX and crypto — and turns raw market data into **structured,
-risk-framed research**:
+Analyzes a **49-instrument universe** across **7 sectors** (equity, rates, metals,
+energy, agriculture, FX, crypto) and turns raw market data into structured,
+risk-framed research:
 
 | Output | What it tells you |
 |---|---|
-| 🧭 **Market context header** | One-line read of the whole tape + per-sector avg move, leader / laggard / divergence |
-| 📊 **Per-asset snapshot** | Price, day range, % change, SMA 20/50/200, RSI, ATR, swing levels, technical consensus |
-| 🚦 **Signal state** | `BULLISH` / `BEARISH` / `NO EDGE` — *no edge is a legitimate output* |
-| 🎯 **Position framework** | Entry zone, stop, target, R:R, invalidation — computed only when a setup exists |
-| 💰 **Sizing** | $ risk/contract, max contracts under the **2% rule**, suggested size (60% of max) |
-| 🛡️ **Risk checks** | Daily-loss-limit gate, stale-data flags, imminent-macro-event awareness |
-| 📈 **Backtest** | Historical walk of the setup — **every rate carries its sample size** |
+| Market context header | One-line read of the whole tape + per-sector avg move, leader / laggard / divergence |
+| Per-asset snapshot | Price, day range, % change, SMA 20/50/200, RSI, ATR, swing levels, technical consensus |
+| Signal state | `BULLISH` / `BEARISH` / `NO EDGE` - *no edge is a legitimate output* |
+| Position framework | Entry zone, stop, target, R:R, invalidation - computed only when a setup exists |
+| Sizing | $ risk/contract, max contracts under the **2% rule**, suggested size (60% of max) |
+| Risk checks | Daily-loss-limit gate, stale-data flags, imminent-macro-event awareness |
+| Backtest | Historical walk of the setup - **every rate carries its sample size** |
 
-> ⚠️ **Honesty first:** this is a *research and risk-framing tool*, not a signal
+> **Honesty first:** this is a *research and risk-framing tool*, not a signal
 > generator. Data is delayed (yfinance), and 2% risk per trade is enforced by the
-> engine — it shows you the math rather than breaching the rule.
+> engine - it shows you the math rather than breaching the rule.
 
 ---
 
-## 🚀 Quick start
+## Quick start
 
-### 1. Install & run
+### Install & run
 
 ```bash
 pip install -r requirements.txt
 python run.py
 ```
 
-Open **<http://127.0.0.1:8000>** 🎉 (or use the launcher below).
+Open **http://127.0.0.1:8000**.
 
-### 2. One-click launcher (Windows)
+### One-click launcher (Windows)
 
 ```powershell
 .\run-agent.ps1            # start server + open browser
@@ -59,17 +51,17 @@ Open **<http://127.0.0.1:8000>** 🎉 (or use the launcher below).
 
 ---
 
-## 🖥️ Frontend (React + Vite)
+## Frontend (React + Vite)
 
 A production build lives in `cme_agent/dist/` and is served automatically by
-FastAPI — **no extra step** to use the dashboard.
+FastAPI - no extra step needed to use the dashboard.
 
-To develop with **hot reload**:
+To develop with hot reload:
 
 ```bash
 cd cme_agent/frontend
 npm install
-npm run dev      # http://127.0.0.1:5173 — proxies /api to the backend
+npm run dev      # http://127.0.0.1:5173 - proxies /api to the backend
 ```
 
 Rebuild the production bundle after a UI change:
@@ -80,23 +72,23 @@ cd cme_agent/frontend && npm run build
 
 ---
 
-## 🗂️ Asset universe
+## Asset universe
 
-**⭐ CORE — position framework by default:** `MES` · `MGC` · `MCL` · `ZN`
+**CORE - position framework by default:** `MES` · `MGC` · `MCL` · `ZN`
 
-**📋 EXTENDED WATCHLIST — report-only (never sized unless explicitly requested):**
+**EXTENDED WATCHLIST - report-only (never sized unless explicitly requested):**
 
-- **Equity:** MNQ, MYM, M2K, NQ, Nikkei 225
-- **Rates:** ZT, ZF, ZB, TN, UB, SOFR 1M/3M, Fed Funds
-- **Metals:** Micro Silver, Platinum, Copper (full + micro), Palladium
-- **Energy:** Micro Nat Gas, Nat Gas, Brent, RBOB, ULSD
-- **Agriculture:** Wheat, KC Wheat, Corn, Soybeans, Soybean Oil/Meal, Hogs, Cattle
-- **FX:** EUR / GBP / JPY / AUD / CAD USD (micro + full)
-- **Crypto:** Micro Bitcoin, Micro Ether, Bitcoin
+- Equity: MNQ, MYM, M2K, NQ, Nikkei 225
+- Rates: ZT, ZF, ZB, TN, UB, SOFR 1M/3M, Fed Funds
+- Metals: Micro Silver, Platinum, Copper (full + micro), Palladium
+- Energy: Micro Nat Gas, Nat Gas, Brent, RBOB, ULSD
+- Agriculture: Wheat, KC Wheat, Corn, Soybeans, Soybean Oil/Meal, Hogs, Cattle
+- FX: EUR / GBP / JPY / AUD / CAD USD (micro + full)
+- Crypto: Micro Bitcoin, Micro Ether, Bitcoin
 
 ---
 
-## 🔌 API reference
+## API reference
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -108,47 +100,47 @@ cd cme_agent/frontend && npm run build
 | `GET` | `/api/backtest/{sym}` | `period=3y&r_multiple=2&stop_atr=1.5&max_hold=20` |
 | `GET` | `/api/chart/{sym}?period=6mo` | Daily bars + SMA/RSI for charting |
 | `GET` / `POST` | `/api/config` | Read / update risk & account config |
-| `GET` | `/api/session` · `POST /api/session/reset` | Session P&L state |
+| `GET` | `/api/session` / `POST /api/session/reset` | Session P&L state |
 | `POST` | `/api/trade` | Log a closed trade `{symbol, entry, exit, contracts, side}` |
 | `GET` / `POST` | `/api/calendar` | Macro-event calendar |
 
 ---
 
-## 🧭 Position framework (per-direction)
+## Position framework (per-direction)
 
 The engine builds an **entry zone** rather than chasing a single price, and sizes
-every stop from **ATR** (capped 0.5–2.5×) against the **nearest swing level**.
+every stop from **ATR** (capped 0.5-2.5x) against the **nearest swing level**.
 
 | | BULLISH (long) | BEARISH (short) |
 |---|---|---|
-| **Entry zone** | price → price − 0.25·ATR (buy the pullback) | price → price + 0.25·ATR (sell the bounce) |
-| **Stop** | entry − 1.5·ATR (below entry) | entry + 1.5·ATR (above entry) |
-| **Target** | nearest swing *high* above, else +2R | nearest swing *low* below, else −2R |
-| **R:R** | `(target − entry) / (entry − stop)` | `(entry − target) / (stop − entry)` |
-| **NO EDGE** | — | flat only, `position: null` |
+| Entry zone | price to price - 0.25 ATR (buy the pullback) | price to price + 0.25 ATR (sell the bounce) |
+| Stop | entry - 1.5 ATR (below entry) | entry + 1.5 ATR (above entry) |
+| Target | nearest swing high above, else +2R | nearest swing low below, else -2R |
+| R:R | `(target - entry) / (entry - stop)` | `(entry - target) / (stop - entry)` |
+| NO EDGE | flat only, `position: null` | flat only, `position: null` |
 
 ---
 
-## 🔒 Risk rules (enforced, not suggested)
+## Risk rules (enforced, not suggested)
 
-- 📏 **2% of account per trade** by default (`risk_percent=0.02`, budget $480 for a
-  $24k account). The engine **refuses** any size that breaches it — it shows you the
+- **2% of account per trade** by default (`risk_percent=0.02`, budget $480 for a
+  $24k account). The engine **refuses** any size that breaches it - it shows the
   math instead of silently violating the rule.
-- 🐢 **Suggested size = 60%** of the 2%-allowed max, leaving room to scale / for error.
-- 🛑 **Daily loss limit (default $500):** crossing it warns and recommends **no new
-  positions**; the UI surfaces a live progress bar.
-- 👀 **Watchlist = report-only.** Never sized unless you explicitly request sizing.
-- ⏱️ **Stale data is flagged**, never disguised as live.
+- **Suggested size = 60%** of the 2%-allowed max, leaving room to scale / for error.
+- **Daily loss limit (default $500):** crossing it warns and recommends no new
+  positions; the UI surfaces a live progress bar.
+- **Watchlist = report-only.** Never sized unless you explicitly request sizing.
+- **Stale data is flagged**, never disguised as live.
 
 ---
 
-## ⚠️ Data source & honesty rules
+## Data source & honesty rules
 
-- **yfinance (Yahoo Finance)** — *delayed*, not a live feed. Every pull is timestamped;
-  intraday quotes older than 15 min are flagged `STALE`.
+- **yfinance (Yahoo Finance)** - *delayed*, not a live feed. Every pull is
+  timestamped; intraday quotes older than 15 min are flagged `STALE`.
 - **Macro calendar** = known FOMC 2026 fixtures + NFP (first Friday) + EIA
   (Wednesdays) + events you add via the UI or `data/calendar.json`. Exact release
-  times are **not certified** — verify against an official source.
+  times are **not certified** - verify against an official source.
 - **Built-in backtest** uses daily bars, ideal fills, no costs/slippage. Rates are
   labeled *anecdotal-quality* and always carry their sample size.
 - **Performance:** first full-universe scan pulls ~1y daily bars for 49 tickers
@@ -157,7 +149,7 @@ every stop from **ATR** (capped 0.5–2.5×) against the **nearest swing level**
 
 ---
 
-## 🧩 Project layout
+## Project layout
 
 ```
 D:\cme
@@ -179,16 +171,12 @@ D:\cme
 
 ---
 
-## 📚 Further reading
+## Further reading
 
-- **`decision.md`** — the full engineering decision log (18 entries): why each choice
-  was made, and the real bugs found along the way.
+- **`decision.md`** - the full engineering decision log (18 entries): why each
+  choice was made, and the real bugs found along the way.
 
 ---
 
-<div align="center">
-
-> ⚠️ **Not licensed investment advice.** All output is probabilistic competition
+> **Not licensed investment advice.** All output is probabilistic competition
 > research and must be treated as such.
-
-</div>
