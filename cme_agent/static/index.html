@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CME Futures Research Agent</title>
+<link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">CME <span>FUTURES RESEARCH AGENT</span></div>
+  <div class="topbar-right">
+    <button id="btnRefresh" class="btn ghost">Refresh All</button>
+    <span id="dataHealth" class="pill warn">checking data…</span>
+  </div>
+</header>
+
+<main class="grid">
+  <!-- LEFT COLUMN: config + session + calendar -->
+  <section class="col">
+    <div class="card">
+      <h2>Account / Risk Rules</h2>
+      <div class="kv">
+        <label>Account size ($)</label><input id="cfgAccount" type="number" step="100" />
+        <label>Risk per trade (%)</label><input id="cfgRiskPct" type="number" step="0.005" min="0.01" max="0.1" />
+        <label>Daily loss limit ($)</label><input id="cfgDailyLimit" type="number" step="50" />
+        <label>Size ratio (suggested % of max)</label><input id="cfgRatio" type="number" step="0.05" min="0.1" max="1" />
+      </div>
+      <div class="row-between">
+        <span>2% budget: <strong id="budgetLine">—</strong></span>
+        <button id="btnSaveCfg" class="btn primary">Save Config</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Session P&amp;L <button id="btnResetSession" class="btn ghost small">reset</button></h2>
+      <div class="pnl-big" id="sessionPnl">—</div>
+      <div class="progress"><div id="lossBar" class="bar"></div></div>
+      <div class="muted" id="sessionMeta">no trades today</div>
+      <div class="log-list" id="tradeLog"></div>
+    </div>
+
+    <div class="card">
+      <h2>Macro Calendar <span class="muted">(next 72h)</span></h2>
+      <div id="calendarList" class="log-list">loading…</div>
+      <details class="add-cal">
+        <summary>+ add event</summary>
+        <div class="kv">
+          <label>Date</label><input id="calDate" type="text" placeholder="2026-09-16 14:00" />
+          <label>Name</label><input id="calName" type="text" placeholder="CPI release" />
+          <label>Impact</label>
+          <select id="calImpact"><option>high</option><option>medium</option><option>low</option></select>
+        </div>
+        <button id="btnAddCal" class="btn primary">Add</button>
+      </details>
+    </div>
+  </section>
+
+  <!-- RIGHT COLUMN: instruments + results -->
+  <section class="col wide">
+    <div class="card">
+      <h2>Instruments</h2>
+      <div class="inst-row">
+        <button class="btn inst" data-sym="MES">MES <small>Micro S&amp;P</small></button>
+        <button class="btn inst" data-sym="MGC">MGC <small>Micro Gold</small></button>
+        <button class="btn inst" data-sym="MCL">MCL <small>Micro Crude</small></button>
+        <button class="btn inst" data-sym="ZN">ZN <small>10Y Note</small></button>
+        <button id="btnAll" class="btn primary">Analyze All</button>
+      </div>
+    </div>
+
+    <div id="results" class="card results">
+      <h2>Analysis</h2>
+      <div id="resultBody" class="muted">Select an instrument to analyze, or run all.</div>
+    </div>
+
+    <div class="card">
+      <h2>Backtest <span class="muted">(built-in trend+RSI setup)</span></h2>
+      <div class="inst-row">
+        <select id="btSym">
+          <option>MES</option><option>MGC</option><option>MCL</option><option>ZN</option>
+        </select>
+        <select id="btPeriod">
+          <option value="3y">3 years</option><option value="2y">2 years</option>
+          <option value="5y">5 years</option>
+        </select>
+        <button id="btnBacktest" class="btn primary">Run</button>
+      </div>
+      <div id="btBody" class="muted">Not run yet.</div>
+    </div>
+  </section>
+</main>
+
+<footer class="muted footer">
+  Research support for a futures trading challenge. Not investment advice.
+  Probabilistic output — no guaranteed outcomes. Built-in data is delayed (yfinance).
+</footer>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
