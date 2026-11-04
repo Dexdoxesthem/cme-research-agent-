@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm --prefix cme_agent/frontend install && npm --prefix cme_agent/frontend run build",
+  "buildCommand": "npm --prefix cme_agent/frontend install --include=dev && npm --prefix cme_agent/frontend run build",
   "outputDirectory": "cme_agent/dist",
   "functions": {
     "api/index.py": {
@@ -17,7 +17,7 @@
       "destination": "/api/index.py"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!assets/|.*\\..*).*)",
       "destination": "/index.html"
     }
   ]

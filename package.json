@@ -4,7 +4,7 @@
   "private": true,
   "description": "Quantitative research & risk-framing desk for CME micro-futures",
   "scripts": {
-    "build": "npm --prefix cme_agent/frontend install && npm --prefix cme_agent/frontend run build",
+    "build": "npm --prefix cme_agent/frontend install --include=dev && npm --prefix cme_agent/frontend run build",
     "dev": "npm --prefix cme_agent/frontend run dev",
     "start": "python run.py"
   }

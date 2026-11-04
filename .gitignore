@@ -7,8 +7,6 @@ venv/
 
 # Node / frontend
 node_modules/
-frontend/dist/
-dist/
 .vercel/
 
 # Logs / runtime state
