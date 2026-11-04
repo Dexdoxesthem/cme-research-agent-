@@ -1,0 +1,22 @@
+# Python bytecode & environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+ENV/
+
+# Logs
+*.log
+server.log
+server.err.log
+srv.out.log
+srv.err.log
+
+# Version control
+.git/
+.gitignore
+
+# Frontend node_modules (installed fresh during cloud build)
+cme_agent/frontend/node_modules/

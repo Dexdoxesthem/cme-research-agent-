@@ -50,7 +50,9 @@ app.add_middleware(
 )
 
 DIST_DIR = Path(__file__).resolve().parent / "dist"
-app.mount("/assets", StaticFiles(directory=DIST_DIR / "assets"), name="assets")
+assets_dir = DIST_DIR / "assets"
+if assets_dir.is_dir():
+    app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
 _lock = threading.Lock()
 
@@ -79,7 +81,15 @@ class TradeLog(BaseModel):
 
 @app.get("/")
 def index():
-    return FileResponse(DIST_DIR / "index.html")
+    index_file = DIST_DIR / "index.html"
+    if index_file.is_file():
+        return FileResponse(index_file)
+    return {"status": "ok", "name": "CME Futures Research Agent", "version": "1.0.0"}
+
+
+@app.get("/api")
+def api_root():
+    return {"status": "ok", "name": "CME Futures Research Agent API", "version": "1.0.0"}
 
 
 @app.get("/api/health")
@@ -249,4 +259,7 @@ def spa_fallback(full_path: str):
     candidate = DIST_DIR / full_path
     if full_path and candidate.is_file():
         return FileResponse(candidate)
-    return FileResponse(DIST_DIR / "index.html")
+    index_file = DIST_DIR / "index.html"
+    if index_file.is_file():
+        return FileResponse(index_file)
+    return {"status": "ok", "name": "CME Futures Research Agent", "version": "1.0.0"}

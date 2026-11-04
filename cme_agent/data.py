@@ -6,14 +6,27 @@ DATA QUALITY POLICY: every pull is timestamped. Intraday quotes older than
 from __future__ import annotations
 
 import logging
+import os
+import tempfile
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Dict, Optional
 
 import pandas as pd
 import yfinance as yf
 
 from .config import CONTRACTS, GROUP_ORDER, load_calendar
+
+# Safe cache locations for serverless / read-only environments
+if os.environ.get("VERCEL") or not os.access(".", os.W_OK):
+    _tmp_dir = tempfile.gettempdir()
+    os.environ.setdefault("XDG_CACHE_HOME", _tmp_dir)
+    os.environ.setdefault("YFINANCE_CACHE_DIR", str(Path(_tmp_dir) / ".cache" / "yfinance"))
+    try:
+        yf.set_tz_cache_location(str(Path(_tmp_dir) / "py-yfinance"))
+    except Exception:
+        pass
 
 log = logging.getLogger("cme_agent.data")
 

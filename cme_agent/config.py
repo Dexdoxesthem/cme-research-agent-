@@ -1,14 +1,16 @@
 """Account configuration, full contract universe, and JSON persistence."""
 import json
 import os
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Optional
 
 BASE_DIR = Path(__file__).resolve().parent
-CONFIG_PATH = BASE_DIR / "data" / "config.json"
-SESSION_PATH = BASE_DIR / "data" / "session.json"
-CALENDAR_PATH = BASE_DIR / "data" / "calendar.json"
+DEFAULT_DATA_DIR = BASE_DIR / "data"
+CONFIG_PATH = DEFAULT_DATA_DIR / "config.json"
+SESSION_PATH = DEFAULT_DATA_DIR / "session.json"
+CALENDAR_PATH = DEFAULT_DATA_DIR / "calendar.json"
 
 
 @dataclass(frozen=True)
@@ -182,10 +184,39 @@ DEFAULT_CALENDAR = {
 }
 
 
-def _read_json(path: Path, default):
-    if path.exists():
+_IN_MEMORY_STORE: Dict[str, dict] = {}
+
+
+def _get_writable_data_dir() -> Path:
+    if "DATA_DIR" in os.environ:
+        p = Path(os.environ["DATA_DIR"])
+    elif os.environ.get("VERCEL"):
+        p = Path(tempfile.gettempdir()) / "cme_agent_data"
+    else:
+        p = DEFAULT_DATA_DIR
+    try:
+        p.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        pass
+    return p
+
+
+def _read_json(path_or_filename, default):
+    filename = path_or_filename.name if isinstance(path_or_filename, Path) else str(path_or_filename)
+
+    if filename in _IN_MEMORY_STORE:
+        val = _IN_MEMORY_STORE[filename]
+        if isinstance(default, dict) and isinstance(val, dict):
+            merged = dict(default)
+            merged.update(val)
+            return merged
+        return val
+
+    # 1. Try writable data directory
+    writable_path = _get_writable_data_dir() / filename
+    if writable_path.exists():
         try:
-            with open(path, "r", encoding="utf-8") as f:
+            with open(writable_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             if isinstance(default, dict) and isinstance(data, dict):
                 merged = dict(default)
@@ -193,14 +224,35 @@ def _read_json(path: Path, default):
                 return merged
             return data
         except (json.JSONDecodeError, OSError):
-            return default
+            pass
+
+    # 2. Try default packaged data directory
+    packaged_path = DEFAULT_DATA_DIR / filename
+    if packaged_path.exists():
+        try:
+            with open(packaged_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(default, dict) and isinstance(data, dict):
+                merged = dict(default)
+                merged.update(data)
+                return merged
+            return data
+        except (json.JSONDecodeError, OSError):
+            pass
+
     return default
 
 
-def _write_json(path: Path, data) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+def _write_json(path_or_filename, data) -> None:
+    filename = path_or_filename.name if isinstance(path_or_filename, Path) else str(path_or_filename)
+    _IN_MEMORY_STORE[filename] = data
+    target_path = _get_writable_data_dir() / filename
+    try:
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(target_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+    except OSError:
+        pass
 
 
 def load_config() -> dict:

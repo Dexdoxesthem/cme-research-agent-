@@ -72,6 +72,29 @@ cd cme_agent/frontend && npm run build
 
 ---
 
+## Deploying to Vercel
+
+The application is pre-configured for zero-friction Vercel deployment:
+- **Frontend (React + Vite)**: Automatically built and served at the Edge CDN from `cme_agent/dist`.
+- **Backend (FastAPI)**: Serves all `/api/*` endpoints via the serverless entrypoint `api/index.py`.
+- **Serverless Resilience**: Read-only filesystem constraints on Vercel are handled automatically (runtime updates use `/tmp` and in-memory fallback, and `yfinance` SQLite cache is safely relocated).
+
+### Git Push Deployment
+
+1. Push this repository to **GitHub**, **GitLab**, or **Bitbucket**.
+2. In [Vercel](https://vercel.com/), click **Add New -> Project** and import the repository.
+3. Keep the default settings (Vercel automatically detects `vercel.json` and provisions both Vite static assets and Python serverless functions).
+4. Click **Deploy**.
+
+### Local Testing with Vercel CLI
+
+```bash
+npm i -g vercel
+vercel dev
+```
+
+---
+
 ## Asset universe
 
 **CORE - position framework by default:** `MES` · `MGC` · `MCL` · `ZN`
