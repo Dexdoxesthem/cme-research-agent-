@@ -5,15 +5,21 @@ async function request(path, opts = {}) {
     headers: { 'Content-Type': 'application/json' },
     ...opts,
   });
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (_) {
+    if (!res.ok) {
+      throw new Error(`API error (${res.status}): ${res.statusText}`);
+    }
+    throw new Error(`API returned non-JSON response (${res.status}). Verify API routing.`);
+  }
   if (!res.ok) {
-    let detail = res.statusText;
-    try {
-      const body = await res.json();
-      detail = body.detail || detail;
-    } catch (_) { /* noop */ }
+    const detail = data?.detail || res.statusText;
     throw new Error(typeof detail === 'string' ? detail : JSON.stringify(detail));
   }
-  return res.json();
+  return data;
 }
 
 export const api = {

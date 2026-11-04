@@ -42,12 +42,21 @@ class SafeJSONResponse(JSONResponse):
 
 
 app = FastAPI(title="CME Futures Research Agent", version="1.0.0",
-              default_response_class=SafeJSONResponse)
+              default_response_class=SafeJSONResponse,
+              redirect_slashes=False)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def normalize_api_path(request, call_next):
+    path = request.scope.get("path", "")
+    if not path.startswith("/api") and not path.startswith("/assets") and path != "/" and "." not in path:
+        request.scope["path"] = f"/api{path}"
+    return await call_next(request)
 
 DIST_DIR = Path(__file__).resolve().parent / "dist"
 assets_dir = DIST_DIR / "assets"
