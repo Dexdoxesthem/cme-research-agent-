@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Node / frontend
+node_modules/
+.vercel/
+
+# Logs / runtime state
+server.log
+server.err.log
+srv.out.log
+srv.err.log
+*.log
+
+# Cache / data
+.cache/
+data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+*.local
