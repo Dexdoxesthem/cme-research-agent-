@@ -53,6 +53,14 @@ app.add_middleware(
 
 @app.middleware("http")
 async def normalize_api_path(request, call_next):
+    query_path = request.query_params.get("__path")
+    matched_path = request.headers.get("x-matched-path")
+
+    if query_path:
+        request.scope["path"] = query_path.split("?")[0]
+    elif matched_path and matched_path != "/api/index" and not matched_path.startswith("/404"):
+        request.scope["path"] = matched_path.split("?")[0]
+
     path = request.scope.get("path", "")
     if not path.startswith("/api") and not path.startswith("/assets") and path != "/" and "." not in path:
         request.scope["path"] = f"/api{path}"
@@ -265,6 +273,8 @@ def contracts():
 
 @app.get("/{full_path:path}")
 def spa_fallback(full_path: str):
+    if full_path.startswith("api/") or full_path == "api":
+        raise HTTPException(status_code=404, detail=f"API endpoint not found: /{full_path}")
     candidate = DIST_DIR / full_path
     if full_path and candidate.is_file():
         return FileResponse(candidate)
